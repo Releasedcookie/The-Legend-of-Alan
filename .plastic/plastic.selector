@@ -1,0 +1,4 @@
+repository "The Legend of Alan@Craig_Studios@cloud"
+  path "/"
+    br "/main"
+    co "/main"
