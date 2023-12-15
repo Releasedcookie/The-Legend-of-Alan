@@ -50,9 +50,10 @@ public class LivesSystem : MonoBehaviour
 
     public void LoseALife()
     {
-       Debug.Log("Player has died");
+        Debug.Log("Player has died");
         Lives = Lives - 1;
         PlayerPrefs.SetInt("Lives", Lives);
+        PlayerPrefs.SetString("dateQuit", "");
     }
 
     public bool DoesPlayerHaveLife()

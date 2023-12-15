@@ -7,8 +7,8 @@ using UnityEngine.UI;
 
 public class LivesRegen : MonoBehaviour
 {
-    [SerializeField] private double LivesRespawnAfter_Seconds = 60;
-    private double lifeRegainTimer = 0f;
+    [SerializeField] private float LivesRespawnAfter_Seconds = 120f;
+    private float lifeRegainTimer = 0f;
     private int Lives;
 
     // For Lives Regen
@@ -27,24 +27,33 @@ public class LivesRegen : MonoBehaviour
     void Update()
     {
         Lives = PlayerPrefs.GetInt("Lives");
-        regenerateLife();
-    }
+        lifeRegainTimer = PlayerPrefs.GetFloat("lifeRegainTimer");
 
+        Debug.Log(lifeRegainTimer);
+
+        if (Lives < 5)
+        {
+            lifeRegainTimer += Time.deltaTime;
+            PlayerPrefs.SetFloat("lifeRegainTimer", lifeRegainTimer);
+
+            if (lifeRegainTimer >= LivesRespawnAfter_Seconds)
+            {
+                lifeRegainTimer = lifeRegainTimer - LivesRespawnAfter_Seconds;
+                PlayerPrefs.SetFloat("lifeRegainTimer", lifeRegainTimer);
+                regenerateLife();
+            }
+        }
+        else
+        {
+            lifeRegainTimer = 0;
+            PlayerPrefs.SetFloat("lifeRegainTimer", lifeRegainTimer);
+        }
+    }
 
     private void regenerateLife()
     {
-        lifeRegainTimer += Time.deltaTime;
-
-        if (lifeRegainTimer > LivesRespawnAfter_Seconds)
-        {
-            lifeRegainTimer -= LivesRespawnAfter_Seconds;
-            if (Lives < 5)
-            {
-                Debug.Log("Regen Lives");
-                Lives += 1;
-            }
-        }
-
+        Debug.Log("Regen Lives");
+        Lives += 1;
         PlayerPrefs.SetInt("Lives", Lives);
     }
 
@@ -93,6 +102,7 @@ public class LivesRegen : MonoBehaviour
             DateQuit = DateTime.Now;
             PlayerPrefs.SetString("dateQuit", DateQuit.ToString());
             PlayerPrefs.SetString("lifeRegainTimer", lifeRegainTimer.ToString());
+            Debug.Log("OnApplicationPause() - User is bye bye");
 
             if (Lives < 5) // Send Notification When Lives are regrown
             {
@@ -109,6 +119,7 @@ public class LivesRegen : MonoBehaviour
         DateQuit = DateTime.Now;
         PlayerPrefs.SetString("dateQuit", DateQuit.ToString());
         PlayerPrefs.SetString("lifeRegainTimer", lifeRegainTimer.ToString());
+        Debug.Log("OnApplicationQuit() - User is bye bye");
 
         if (Lives < 5) // Send Notification When Lives are regrown
         {
@@ -121,29 +132,30 @@ public class LivesRegen : MonoBehaviour
     private void getOfflineLivesRegen()
     {
         timeNow = DateTime.Now;
-        Debug.Log("START APP: Time now is: " + timeNow);
         string dateQuitString = PlayerPrefs.GetString("dateQuit");
-        lifeRegainTimerString = PlayerPrefs.GetString("lifeRegainTimer");
-        Debug.Log("START APP: Date Quit: " + dateQuitString);
-        Debug.Log("START APP: lifeRegainTimer is: " + lifeRegainTimerString);
-        Debug.Log(PlayerPrefs.GetString("HelloThere"));
-        lifeRegainTimer = double.Parse(lifeRegainTimerString);
+        float offlineRegenTimer = PlayerPrefs.GetFloat("lifeRegainTimer");
+
+        //Debug.Log("START APP: Time now is: " + timeNow);
+        //Debug.Log("START APP: Date Quit: " + dateQuitString);
+        //Debug.Log("START APP: lifeRegainTimer is: " + offlineRegenTimer);
+
+        lifeRegainTimer = offlineRegenTimer;
 
         if (!dateQuitString.Equals(""))
         {
-            Debug.Log("dateQuitString is not null");
+            // Debug.Log("dateQuitString is not null");
             DateQuit = DateTime.Parse(dateQuitString);
             timeNow = DateTime.Now;
 
             if (timeNow > DateQuit)
             {
                 TimeSpan timespan = timeNow - DateQuit;
-                Debug.Log("User was away for " + timespan.TotalSeconds + " Seconds");
-                lifeRegainTimer = lifeRegainTimer + timespan.TotalSeconds;
-                Debug.Log("New LifeTimer Is" + lifeRegainTimer);
+                //Debug.Log("User was away for " + timespan.TotalSeconds + " Seconds");
+                lifeRegainTimer = lifeRegainTimer + Convert.ToSingle(timespan.TotalSeconds);
+                //Debug.Log("New LifeTimer Is" + lifeRegainTimer);
 
                 PlayerPrefs.SetString("dateQuit", "");
-                PlayerPrefs.SetString("lifeRegainTimer", "0");
+                PlayerPrefs.SetFloat("lifeRegainTimer", lifeRegainTimer);
 
             }
 

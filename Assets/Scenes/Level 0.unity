@@ -2812,6 +2812,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1029686188}
   - component: {fileID: 1029686189}
+  - component: {fileID: 1029686190}
   m_Layer: 5
   m_Name: Lives System
   m_TagString: Untagged
@@ -2854,12 +2855,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a88c71611aaff5a438975f0d61439848, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LivesRespawnAfter_Seconds: 10
   LivesText: {fileID: 957833183}
+  lifeRegainTimer: 0
   LifeScreenPopup: {fileID: 732457915}
   NextLifeInPopup: {fileID: 856167863}
   NumberOfLivesText: {fileID: 1200494716}
   closePopupButton: {fileID: 1540853296}
+--- !u!114 &1029686190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1029686187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 828367e82f0028043b390b6b7dc6a869, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LivesRespawnAfter_Seconds: 60
 --- !u!1 &1075693459
 GameObject:
   m_ObjectHideFlags: 0
